@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FtpDroid</string>
+    <string name="main_fun_share">共享</string>
+    <string name="main_fun_connect">连接</string>
 </resources>
