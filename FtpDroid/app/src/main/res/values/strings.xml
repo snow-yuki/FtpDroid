@@ -3,4 +3,5 @@
     <string name="main_fun_share">共享</string>
     <string name="main_fun_connect">连接</string>
     <string name="menu_mkdir">新建文件夹</string>
+    <string name="action_transfer_manager">传输管理</string>
 </resources>

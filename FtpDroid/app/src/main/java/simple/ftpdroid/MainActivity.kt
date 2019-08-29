@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initBtn(){
+        hostNameEditText.setText("192.168.8.192")
+        userNameEditText.setText("admin")
+        pwdEditText.setText("123456")
+
         funServer.setOnClickListener {
             detailFunShare.layoutParams.height = 0
             detailFunCon.visibility = View.GONE
@@ -74,6 +79,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         connectBtn.setOnClickListener {
+            Global.hostName = hostNameEditText.text.toString()
+            Global.userName = userNameEditText.text.toString()
+            Global.password = pwdEditText.text.toString()
+            if(Global.hostName.isBlank()){
+                println("地址不能为空")
+                toast("地址不能为空")
+                return@setOnClickListener
+            }
+            if(Global.userName.isBlank()){
+                println("用户名不能为空")
+                toast("用户名不能为空")
+                return@setOnClickListener
+            }
+            if(Global.password.isBlank()){
+                println("密码不能为空")
+                toast("密码不能为空")
+                return@setOnClickListener
+            }
+            Global.port = 2221
             startActivity<FtpListActivity>()
         }
     }

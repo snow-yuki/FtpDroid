@@ -3,51 +3,114 @@ package simple.ftpdroid
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_ftp_list.*
+import org.apache.commons.net.ftp.FTPFile
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
+import simple.ftpdroid.FTP.FTP
+import java.io.IOException
+import java.util.ArrayList
 
 class FtpListActivity : AppCompatActivity() {
+
+    var presentPath = "/"
+
+    private var ftp: FTP? = null
+    private var remoteFile: MutableList<FTPFile>? = null
+    private lateinit var adapter : FtpFileAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ftp_list)
 
-        loadFileData()
+        setSupportActionBar(toolbar)
+        loadRemoteView()
     }
 
-    private fun loadFileData() {
-        val tempNameList = arrayListOf("00000","1111","222","333","4444","5555"
-        ,"6666","7777","8888","9999")
-        val adapter = FtpFileAdapter(this,tempNameList)
-        fileListView.adapter = adapter
+    private fun loadRemoteView() {
+        if (ftp != null) {
+            ftp!!.closeConnect()
+        }
+        ftp = FTP(Global.hostName, Global.userName, Global.password, Global.port)
+        doAsync {
+            try {
+                ftp!!.openConnect()
+                println("connect succeed=====================")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            ftp!!.listFiles(FTP.REMOTE_PATH)
+            uiThread {
+                remoteFile = ArrayList()
+                remoteFile = ftp!!.list
+                println("ftp list == ${ftp!!.list.size} =================")
+                adapter = FtpFileAdapter(this@FtpListActivity,remoteFile!!)
+                fileListView!!.adapter = adapter
+                adapter.onFolderClick = {name->
+                    println("click folder : ${name}============")
+                    presentPath = "$presentPath$name/"
+                    println("present path = ${presentPath}===============")
+                    ftp!!.listFiles(presentPath)
+                    println("调用成功======")
+//                    remoteFile = ftp!!.list
+//                    println("remote file = ${remoteFile!!.size}")
+//                    adapter.data.clear()
+//                    adapter.data.addAll(ftp!!.list)
+//                    adapter.notifyDataSetChanged()
+//                    println("enter folder succeed ===============")
+                }
+                adapter.onFildClick = {name ->
+                    toast("click file : ${name}")
+                }
+            }
+        }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_pro_key,menu)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.ftp_list_menu,menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.action_sync_key -> {
-                syncKey()
+            R.id.action_mkdir -> {
+                toast("make dirs")
             }
-            R.id.action_key_src -> {
-                if(currentKeySrc == localSrc){
-                    currentKeySrc = netSrc
-                    loadKeyFromServer()
-                    toast("key from server")
-                }else{
-                    currentKeySrc = localSrc
-                    loadKeyFromLocal()
-                    toast("key from local")
-                }
-            }
-            R.id.action_donate_info -> {
-                activity!!.startActivity<DonateInfoActivity>()
+            R.id.action_transfer -> {
+                toast("transfer manager")
             }
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onBackPressed() {
+        if (presentPath.equals("/", ignoreCase = true)) {
+            finish()
+        } else {
+            presentPath = presentPath.substring(0, presentPath.length - 1)
+            presentPath = presentPath.substring(0,presentPath.lastIndexOf('/',0,true))
+            try {
+                ftp!!.listFiles(presentPath)
+                remoteFile = ftp!!.list
+                adapter.data.clear()
+                adapter.data.addAll(ftp!!.list)
+                adapter.notifyDataSetChanged()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        try {
+            ftp!!.closeConnect()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
 }

@@ -34,7 +34,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:tint="@color/white"
-        app:rippleColor="@color/white"
+        app:rippleColor="@color/blue"
         app:srcCompat="@drawable/ic_cloud_upload" />
 
 </android.support.design.widget.CoordinatorLayout>
