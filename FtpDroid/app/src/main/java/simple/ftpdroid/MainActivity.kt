@@ -9,6 +9,7 @@ import android.view.animation.Transformation
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.dip
+import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -70,6 +71,10 @@ class MainActivity : AppCompatActivity() {
             }
             animation.duration = 500L
             detailFunCon.startAnimation(animation)
+        }
+
+        connectBtn.setOnClickListener {
+            startActivity<FtpListActivity>()
         }
     }
 }
