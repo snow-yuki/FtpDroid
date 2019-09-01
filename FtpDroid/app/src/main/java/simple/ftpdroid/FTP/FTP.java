@@ -1,6 +1,5 @@
 package simple.ftpdroid.FTP;
 
-import android.os.Message;
 import android.util.Log;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -19,43 +18,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-/**
- * FTP封装类.
- *  
- * @author cui_tao
- */
 public class FTP {
 
-
-    /**
-     * 服务器名.
-     */
     private String hostName;
-
-    /**
-     * 用户名.
-     */
     private String userName;
-
-    /**
-     * 密码.
-     */
     private String password;
-
-    /**
-     * 端口.
-     */
     private int port;
 
-    /**
-     * FTP连接.
-     */
     private FTPClient ftpClient;
 
-    /**
-     * FTP列表.
-     */
-    static private List<FTPFile> list;
+    private List<FTPFile> list;
 
     public List<FTPFile> getList(){
         return list;
@@ -98,9 +70,6 @@ public class FTP {
      * @throws IOException 
      */
     public void openConnect() throws IOException {
-
-        //死在了这里
-
         // 中文转码
         ftpClient.setControlEncoding("UTF-8");
 
@@ -157,6 +126,7 @@ public class FTP {
             System.out.println("进入 list Files========");
             list.clear();
             FTPFile[] files = ftpClient.listFiles(remotePath);
+            System.out.println("files size = " + files.length + "==========");
             Collections.addAll(list, files);
         }catch (IOException e){
             e.printStackTrace();

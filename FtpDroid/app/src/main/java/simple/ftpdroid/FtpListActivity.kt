@@ -7,6 +7,7 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_ftp_list.*
 import org.apache.commons.net.ftp.FTPFile
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
 import org.jetbrains.anko.uiThread
 import simple.ftpdroid.FTP.FTP
@@ -34,6 +35,7 @@ class FtpListActivity : AppCompatActivity() {
             ftp!!.closeConnect()
         }
         ftp = FTP(Global.hostName, Global.userName, Global.password, Global.port)
+        Global.ftp = ftp
         doAsync {
             try {
                 ftp!!.openConnect()
@@ -79,7 +81,7 @@ class FtpListActivity : AppCompatActivity() {
                 toast("make dirs")
             }
             R.id.action_transfer -> {
-                toast("transfer manager")
+                startActivity<TransferActivity>()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -108,6 +110,8 @@ class FtpListActivity : AppCompatActivity() {
         super.onStop()
         try {
             ftp!!.closeConnect()
+            ftp = null
+            Global.ftp = null
         } catch (e: IOException) {
             e.printStackTrace()
         }

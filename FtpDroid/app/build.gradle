@@ -18,6 +18,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
 }
 
 dependencies {
@@ -32,6 +40,12 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     api files('libs/commons-net-3.3.jar')
+    api files('libs/ftplet-api-1.1.1.jar')
+    api files('libs/ftpserver-core-1.1.1.jar')
+    api files('libs/log4j-1.2.17.jar')
+    api files('libs/mina-core-2.0.16.jar')
+    api files('libs/slf4j-api-1.7.21.jar')
+    api files('libs/slf4j-log4j12-1.7.21.jar')
 }
 repositories {
     mavenCentral()
