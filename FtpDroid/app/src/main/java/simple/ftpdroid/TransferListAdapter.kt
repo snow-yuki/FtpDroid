@@ -1,15 +1,20 @@
 package simple.ftpdroid
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import org.jetbrains.anko.find
 
-class TransferListAdapter(var c : Context,val data : MutableList<String>) : RecyclerView.Adapter<TransferListAdapter.TransferListHolder>() {
+class TransferListAdapter(var c : Context,val data : MutableList<TransferBean>) : RecyclerView.Adapter<TransferListAdapter.TransferListHolder>() {
+
+    val speedUnitArray = arrayOf("b/s","Kb/s","Mb/s","Gb/s","Tb/s")
 
     override fun getItemCount() = data.size
 
@@ -18,10 +23,29 @@ class TransferListAdapter(var c : Context,val data : MutableList<String>) : Recy
     }
 
     override fun onBindViewHolder(viewHolder: TransferListHolder, position: Int) {
-        viewHolder.itemNameTextView.text = data[position]
+        val bean = data[position]
+        viewHolder.itemNameTextView.text = bean.name
+
+        viewHolder.progressBar.progress = (bean.progress*100/bean.size).toInt()
+        if(bean.isDownload){
+            viewHolder.transferTypeImage.setImageResource(R.drawable.ic_file_download)
+            viewHolder.transferTypeImage.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(c,R.color.blue))
+        }else{
+            viewHolder.transferTypeImage.setImageResource(R.drawable.ic_file_upload)
+            viewHolder.transferTypeImage.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(c,R.color.accentPink))
+        }
+        var speed : Float = (bean.progress - bean.lastProgress).toFloat()
+        var unit = 0
+        while(speed/1024 > 1f && unit < speedUnitArray.size){
+            speed /= 1024
+            unit++
+        }
+        speed = (speed*10).toInt().toFloat()/10
+        viewHolder.ratioTextView.text = "$speed$unit"
     }
 
     inner class TransferListHolder(view : View) : RecyclerView.ViewHolder(view){
+        val transferTypeImage = view.find<ImageView>(R.id.transferTypeImage)
         val itemNameTextView = view.find<TextView>(R.id.transferItemNameTextView)
         val ratioTextView = view.find<TextView>(R.id.ratioTextView)
         val progressBar = view.find<ProgressBar>(R.id.progressBar)

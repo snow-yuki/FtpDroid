@@ -14,8 +14,10 @@ class TransferActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-        val tempList = arrayListOf("aaa","ccc","ccc")
-        val adapter = TransferListAdapter(this,tempList)
-        transferListView.adapter = adapter
+        loadTransferList()
+    }
+
+    private fun loadTransferList(){
+        //todo: 定时（1s）刷新列表
     }
 }

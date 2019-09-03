@@ -7,36 +7,41 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/transferTypeImage"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:tint="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_description" />
+        app:srcCompat="@drawable/ic_file_download" />
 
     <TextView
         android:id="@+id/transferItemNameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        android:layout_marginEnd="8dp"
+        android:textSize="16sp"
+        android:text="Unknown File"
         app:layout_constraintEnd_toStartOf="@+id/ratioTextView"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/transferTypeImage"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/transferTypeImage"
         app:layout_constraintTop_toBottomOf="@+id/transferItemNameTextView" />
 
     <TextView
@@ -45,7 +50,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="TextView"
+        android:textSize="14sp"
+        android:text="0b/s"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

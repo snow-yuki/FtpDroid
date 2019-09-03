@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import org.jetbrains.anko.toast
+import java.io.File
 
 class TransferService : Service() {
 
@@ -18,30 +19,22 @@ class TransferService : Service() {
             return
         }
 
-        while (Global.downloadList.isNotEmpty() or Global.uploadList.isNotEmpty()){
-            if(Global.downloadList.isNotEmpty()){
-                val downloadInfo = Global.downloadList.first()
-                if(Global.ftp != null){
-                    Global.ftp!!.download(downloadInfo.remotePath, downloadInfo.remoteFileName, downloadInfo.localPath)
-                    Global.downloadList.removeAt(0)
-                    continue
-                }else{
-                    println("ftp连接已关闭")
-                    toast("下载失败：ftp连接已关闭")
-                    return
-                }
+        while (Global.transferList.isNotEmpty()){
+            val bean = Global.transferList.first()
+            if(Global.ftp == null){
+                toast("下载失败：ftp已关闭")
+                println("下载失败：ftp已关闭")
+                return
             }
-            if(Global.uploadList.isNotEmpty()){
-                val uploadInfo = Global.uploadList.first()
-                if(Global.ftp != null){
-                    Global.ftp!!.uploading(uploadInfo.localFile,uploadInfo.remotePath)
-                    Global.uploadList.removeAt(0)
-                    continue
-                }else{
-                    println("ftp连接已关闭")
-                    toast("上传失败：ftp连接已关闭")
-                    return
-                }
+
+            if(bean.isDownload){
+                Global.ftp!!.download(bean.remotePath, bean.name, bean.localPath)
+                Global.transferList.removeAt(0)
+                continue
+            }else{
+                Global.ftp!!.uploading(File("${bean.localPath}${bean.name}"),bean.remotePath)
+                Global.transferList.removeAt(0)
+                continue
             }
         }
 

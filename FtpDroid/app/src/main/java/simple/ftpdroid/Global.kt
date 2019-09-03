@@ -10,6 +10,5 @@ object Global {
 
     var ftp : FTP? = null
 
-    val downloadList : MutableList<DownloadInfo> = mutableListOf()
-    val uploadList : MutableList<UploadInfo> = mutableListOf()
+    val transferList : MutableList<TransferBean> = mutableListOf()
 }
