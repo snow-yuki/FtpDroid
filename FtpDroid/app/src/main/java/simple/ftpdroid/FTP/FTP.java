@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import simple.ftpdroid.Global;
+
 public class FTP {
 
     private String hostName;
@@ -26,12 +28,6 @@ public class FTP {
     private int port;
 
     private FTPClient ftpClient;
-
-    private List<FTPFile> list;
-
-    public List<FTPFile> getList(){
-        return list;
-    }
 
     /**
      * FTP根目录.
@@ -61,7 +57,6 @@ public class FTP {
         this.password = pass;
         this.port = port;
         this.ftpClient = new FTPClient();
-        this.list = new ArrayList<FTPFile>();
     }
 
 
@@ -124,10 +119,9 @@ public class FTP {
     public void listFiles(final String remotePath) {
         try {
             System.out.println("进入 list Files========");
-            list.clear();
             FTPFile[] files = ftpClient.listFiles(remotePath);
-            System.out.println("files size = " + files.length + "==========");
-            Collections.addAll(list, files);
+            Collections.addAll(Global.INSTANCE.getCurrentFileList(), files);
+            System.out.println("list. size = " + Global.INSTANCE.getCurrentFileList().size() + "==========");
         }catch (IOException e){
             e.printStackTrace();
         }

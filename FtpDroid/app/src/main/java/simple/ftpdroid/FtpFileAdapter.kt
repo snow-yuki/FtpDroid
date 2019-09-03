@@ -10,26 +10,26 @@ import android.widget.TextView
 import org.apache.commons.net.ftp.FTPFile
 import org.jetbrains.anko.find
 
-class FtpFileAdapter(var c : Context,val data : MutableList<FTPFile>) : RecyclerView.Adapter<FtpFileAdapter.FtpFileHolder>() {
+class FtpFileAdapter(var c : Context) : RecyclerView.Adapter<FtpFileAdapter.FtpFileHolder>() {
 
     var onFolderClick : (folderName : String) -> Unit = {}
     var onFildClick : (fileName : String) -> Unit = {}
     
-    override fun getItemCount() = data.size
+    override fun getItemCount() = Global.currentFileList.size
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): FtpFileHolder {
         return FtpFileHolder(LayoutInflater.from(c).inflate(R.layout.ftp_file_item,p0,false))
     }
 
     override fun onBindViewHolder(viewHolder: FtpFileHolder, position: Int) {
-        viewHolder.fileNameTextView.text = data[position].name
-        if(data[position].isDirectory){
+        viewHolder.fileNameTextView.text = Global.currentFileList[position].name
+        if(Global.currentFileList[position].isDirectory){
             viewHolder.imageView.setImageResource(R.drawable.ic_folder)
             viewHolder.fileSizeTextView.visibility = View.GONE
         }else{
             viewHolder.fileSizeTextView.visibility = View.VISIBLE
             viewHolder.imageView.setImageResource(R.drawable.ic_description)
-            viewHolder.fileSizeTextView.text = data[position].size.toString()
+            viewHolder.fileSizeTextView.text = Global.currentFileList[position].size.toString()
         }
     }
 
@@ -41,10 +41,10 @@ class FtpFileAdapter(var c : Context,val data : MutableList<FTPFile>) : Recycler
         init {
             fileItem.setOnClickListener {
                 val p = layoutPosition
-                if(data[p].isDirectory){
-                    onFolderClick(data[p].name)
+                if(Global.currentFileList[p].isDirectory){
+                    onFolderClick(Global.currentFileList[p].name)
                 }else{
-                    onFildClick(data[p].name)
+                    onFildClick(Global.currentFileList[p].name)
                 }
             }
         }

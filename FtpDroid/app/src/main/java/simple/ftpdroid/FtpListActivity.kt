@@ -1,5 +1,7 @@
 package simple.ftpdroid
 
+import android.os.Process;
+
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -19,7 +21,6 @@ class FtpListActivity : AppCompatActivity() {
     var presentPath = "/"
 
     private var ftp: FTP? = null
-    private var remoteFile: MutableList<FTPFile>? = null
     private lateinit var adapter : FtpFileAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,23 +46,22 @@ class FtpListActivity : AppCompatActivity() {
             }
             ftp!!.listFiles(FTP.REMOTE_PATH)
             uiThread {
-                remoteFile = ArrayList()
-                remoteFile = ftp!!.list
-                println("ftp list == ${ftp!!.list.size} =================")
-                adapter = FtpFileAdapter(this@FtpListActivity,remoteFile!!)
+                adapter = FtpFileAdapter(this@FtpListActivity)
                 fileListView!!.adapter = adapter
                 adapter.onFolderClick = {name->
                     println("click folder : ${name}============")
                     presentPath = "$presentPath$name/"
                     println("present path = ${presentPath}===============")
-                    ftp!!.listFiles(presentPath)
-                    println("调用成功======")
-//                    remoteFile = ftp!!.list
-//                    println("remote file = ${remoteFile!!.size}")
-//                    adapter.data.clear()
-//                    adapter.data.addAll(ftp!!.list)
-//                    adapter.notifyDataSetChanged()
-//                    println("enter folder succeed ===============")
+                    doAsync {
+                        Global.currentFileList.clear()
+                        ftp!!.listFiles(presentPath)
+                        println("调用成功======")
+                        uiThread {
+                            println("ftp.size = ${Global.currentFileList.size}")
+                            adapter.notifyDataSetChanged()
+                            println("enter folder succeed ===============")
+                        }
+                    }
                 }
                 adapter.onFildClick = {name ->
                     toast("click file : ${name}")
@@ -94,11 +94,13 @@ class FtpListActivity : AppCompatActivity() {
             presentPath = presentPath.substring(0, presentPath.length - 1)
             presentPath = presentPath.substring(0,presentPath.lastIndexOf('/',0,true))
             try {
-                ftp!!.listFiles(presentPath)
-                remoteFile = ftp!!.list
-                adapter.data.clear()
-                adapter.data.addAll(ftp!!.list)
-                adapter.notifyDataSetChanged()
+                doAsync {
+                    Global.currentFileList.clear()
+                    ftp!!.listFiles(presentPath)
+                    uiThread {
+                        adapter.notifyDataSetChanged()
+                    }
+                }
             } catch (e: IOException) {
                 e.printStackTrace()
             }
