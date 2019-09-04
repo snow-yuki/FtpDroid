@@ -25,8 +25,6 @@ class TransferListAdapter(var c : Context,val data : MutableList<TransferBean>) 
     override fun onBindViewHolder(viewHolder: TransferListHolder, position: Int) {
         val bean = data[position]
         viewHolder.itemNameTextView.text = bean.name
-
-        viewHolder.progressBar.progress = (bean.progress*100/bean.size).toInt()
         if(bean.isDownload){
             viewHolder.transferTypeImage.setImageResource(R.drawable.ic_file_download)
             viewHolder.transferTypeImage.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(c,R.color.blue))
@@ -34,14 +32,27 @@ class TransferListAdapter(var c : Context,val data : MutableList<TransferBean>) 
             viewHolder.transferTypeImage.setImageResource(R.drawable.ic_file_upload)
             viewHolder.transferTypeImage.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(c,R.color.accentPink))
         }
-        var speed : Float = (bean.progress - bean.lastProgress).toFloat()
-        var unit = 0
-        while(speed/1024 > 1f && unit < speedUnitArray.size){
-            speed /= 1024
-            unit++
+        if(bean.hasBegan){
+            viewHolder.progressBar.visibility = View.VISIBLE
+            viewHolder.progressBar.isIndeterminate = false
+            if(bean.isDownload){
+                viewHolder.ratioTextView.text = "下载中..."
+//                viewHolder.progressBar.progress = (bean.progress*100/bean.size).toInt()
+//                var speed : Float = (bean.progress - bean.lastProgress).toFloat()
+//                var unit = 0
+//                while(speed/1024 > 1f && unit < speedUnitArray.size-1){
+//                    speed /= 1024
+//                    unit++
+//                }
+//                speed = (speed*10).toInt().toFloat()/10
+//                viewHolder.ratioTextView.text = "$speed${speedUnitArray[unit]}"
+            }else{
+                viewHolder.ratioTextView.text = "上传中..."
+            }
+        }else{
+            viewHolder.ratioTextView.text = "等待中"
+            viewHolder.progressBar.visibility = View.GONE
         }
-        speed = (speed*10).toInt().toFloat()/10
-        viewHolder.ratioTextView.text = "$speed$unit"
     }
 
     inner class TransferListHolder(view : View) : RecyclerView.ViewHolder(view){

@@ -127,6 +127,14 @@ public class FTP {
         }
     }
 
+    public void deleteFile(String filePath){
+        try{
+            ftpClient.deleteFile(filePath);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 下载.
      * @param remotePath FTP目录
@@ -152,7 +160,7 @@ public class FTP {
             if (ftpFile.getName().equals(fileName)) {
                 System.out.println("download...");
                 // 创建本地目录
-                File file = new File(localPath + "/" + fileName);
+                File file = new File(localPath + fileName);
                 // 下载前时间
                 Date startTime = new Date();
                 if (ftpFile.isDirectory()) {
@@ -272,13 +280,17 @@ public class FTP {
      * @throws IOException 
      */
     private boolean uploadingSingle(File localFile) throws IOException {
+        System.out.println("======uploading single");
         boolean flag = true;
         // 创建输入流
         InputStream inputStream = new FileInputStream(localFile);
         // 统计流量
         response += (double) inputStream.available() / 1;
         // 上传单个文件
+        System.out.println("begin store file============");
+        
         flag = ftpClient.storeFile(localFile.getName(), inputStream);
+        System.out.println("store file finish======");
         // 关闭文件流
         inputStream.close();
         return flag;

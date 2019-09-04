@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import org.apache.commons.net.ftp.FTPFile
 import org.jetbrains.anko.find
 
 class FtpFileAdapter(var c : Context) : RecyclerView.Adapter<FtpFileAdapter.FtpFileHolder>() {
 
+    val sizeUnitList = listOf("b","Kb","Mb","Gb","Tb")
+
     var onFolderClick : (folderName : String) -> Unit = {}
-    var onFildClick : (fileName : String) -> Unit = {}
+    var onFileClick : (fileName : String, position : Int) -> Unit = {_,_ -> Unit}
     
     override fun getItemCount() = Global.currentFileList.size
 
@@ -29,7 +30,14 @@ class FtpFileAdapter(var c : Context) : RecyclerView.Adapter<FtpFileAdapter.FtpF
         }else{
             viewHolder.fileSizeTextView.visibility = View.VISIBLE
             viewHolder.imageView.setImageResource(R.drawable.ic_description)
-            viewHolder.fileSizeTextView.text = Global.currentFileList[position].size.toString()
+            var fileSize = Global.currentFileList[position].size.toFloat()
+            var unit = 0
+            while(fileSize/1024 > 1 && unit < sizeUnitList.size-1){
+                fileSize /= 1024
+                unit++
+            }
+            fileSize = (fileSize*10).toInt().toFloat()/10
+            viewHolder.fileSizeTextView.text = "$fileSize${sizeUnitList[unit]}"
         }
     }
 
@@ -44,7 +52,7 @@ class FtpFileAdapter(var c : Context) : RecyclerView.Adapter<FtpFileAdapter.FtpF
                 if(Global.currentFileList[p].isDirectory){
                     onFolderClick(Global.currentFileList[p].name)
                 }else{
-                    onFildClick(Global.currentFileList[p].name)
+                    onFileClick(Global.currentFileList[p].name,p)
                 }
             }
         }

@@ -13,4 +13,6 @@ object Global {
 
     val transferList : MutableList<TransferBean> = mutableListOf()
     val currentFileList : MutableList<FTPFile> = mutableListOf()
+
+    var isServiceRunning = false
 }

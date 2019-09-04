@@ -1,5 +1,6 @@
 package simple.ftpdroid
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -26,10 +27,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        requestPermission()
+
         SharePanelHeight = dip(116)
         ConnectPanelHeight = dip(216)
 
         initUI()
+    }
+
+    private fun requestPermission(){
+        PermissionHandler.checkPermission(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),0)
     }
 
     private fun initUI(){
