@@ -11,7 +11,7 @@ import org.jetbrains.anko.find
 
 class FtpFileAdapter(var c : Context) : RecyclerView.Adapter<FtpFileAdapter.FtpFileHolder>() {
 
-    val sizeUnitList = listOf("b","Kb","Mb","Gb","Tb")
+    val sizeUnitList = listOf("B","KB","MB","GB","TB")
 
     var onFolderClick : (folderName : String) -> Unit = {}
     var onFileClick : (fileName : String, position : Int) -> Unit = {_,_ -> Unit}

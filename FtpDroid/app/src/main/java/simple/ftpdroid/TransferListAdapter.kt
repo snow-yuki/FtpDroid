@@ -14,7 +14,7 @@ import org.jetbrains.anko.find
 
 class TransferListAdapter(var c : Context,val data : MutableList<TransferBean>) : RecyclerView.Adapter<TransferListAdapter.TransferListHolder>() {
 
-    val speedUnitArray = arrayOf("b/s","Kb/s","Mb/s","Gb/s","Tb/s")
+    val speedUnitArray = arrayOf("B/s","KB/s","MB/s","GB/s","TB/s")
 
     override fun getItemCount() = data.size
 
@@ -34,8 +34,8 @@ class TransferListAdapter(var c : Context,val data : MutableList<TransferBean>) 
         }
         if(bean.hasBegan){
             viewHolder.progressBar.visibility = View.VISIBLE
-            viewHolder.progressBar.isIndeterminate = false
             if(bean.isDownload){
+                viewHolder.progressBar.isIndeterminate = true
                 viewHolder.ratioTextView.text = "下载中..."
 //                viewHolder.progressBar.progress = (bean.progress*100/bean.size).toInt()
 //                var speed : Float = (bean.progress - bean.lastProgress).toFloat()
@@ -47,7 +47,16 @@ class TransferListAdapter(var c : Context,val data : MutableList<TransferBean>) 
 //                speed = (speed*10).toInt().toFloat()/10
 //                viewHolder.ratioTextView.text = "$speed${speedUnitArray[unit]}"
             }else{
-                viewHolder.ratioTextView.text = "上传中..."
+                viewHolder.progressBar.isIndeterminate = true
+                viewHolder.progressBar.progress = (bean.progress*100/bean.size).toInt()
+                var speed : Float = (bean.progress - bean.lastProgress).toFloat()
+                var unit = 0
+                while(speed/1024 > 1f && unit < speedUnitArray.size-1){
+                    speed /= 1024
+                    unit++
+                }
+                speed = (speed*10).toInt().toFloat()/10
+                viewHolder.ratioTextView.text = "$speed${speedUnitArray[unit]}"
             }
         }else{
             viewHolder.ratioTextView.text = "等待中"

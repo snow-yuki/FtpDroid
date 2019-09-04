@@ -62,6 +62,7 @@ class FtpListActivity : AppCompatActivity() {
             val uploadBean = TransferBean(purePath, presentPath, fileName, file.length(), false, false, 0L, 0L)
             Global.transferList.add(uploadBean)
             if(!Global.isServiceRunning){
+                println("启动服务======")
                 Global.isServiceRunning = true
                 startService<TransferService>()
             }
@@ -109,6 +110,7 @@ class FtpListActivity : AppCompatActivity() {
                         )
                         if(!Global.isServiceRunning){
                             Global.isServiceRunning = true
+                            println("启动下载服务======")
                             startService<TransferService>()
                         }
                         dialog.cancel()
